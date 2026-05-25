@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { isPlanId, type LicenseStatus, PLANS, type PlanId } from '@arre/shared';
+import { FEATURES, isPlanId, type LicenseStatus, PLANS, type PlanId } from '@arre/shared';
 import type { Env, Variables } from '../env.js';
 import { requireAuth, requireStaff } from '../middleware/auth.js';
 import { errors, ok } from '../lib/response.js';
@@ -140,4 +140,63 @@ adminRoutes.get('/audit', async (c) => {
     `SELECT id, admin_id, action, target, reason, created_at FROM admin_actions ORDER BY created_at DESC LIMIT 200`,
   ).all();
   return ok(c, { actions: rows.results ?? [] });
+});
+
+/** GET /admin/merchants — merchant orgs with license status. */
+adminRoutes.get('/merchants', async (c) => {
+  const rows = await c.env.DB.prepare(
+    `SELECT o.id, o.name, o.type, o.created_at,
+            (SELECT email FROM users u JOIN org_members m ON m.user_id=u.id WHERE m.org_id=o.id ORDER BY m.created_at ASC LIMIT 1) owner_email,
+            (SELECT status FROM licenses l WHERE l.org_id=o.id ORDER BY l.created_at DESC LIMIT 1) license_status,
+            (SELECT plan_id FROM licenses l WHERE l.org_id=o.id ORDER BY l.created_at DESC LIMIT 1) plan_id
+       FROM organizations o ORDER BY o.created_at DESC LIMIT 300`,
+  ).all();
+  return ok(c, { merchants: rows.results ?? [] });
+});
+
+/** GET /admin/billing — subscriptions + recent webhooks. */
+adminRoutes.get('/billing', async (c) => {
+  const [subs, hooks] = await Promise.all([
+    c.env.DB.prepare(`SELECT id, org_id, plan_id, status, provider, current_period_end FROM subscriptions ORDER BY created_at DESC LIMIT 200`).all(),
+    c.env.DB.prepare(`SELECT id, provider, event_type, signature_ok, processed, created_at FROM billing_webhooks ORDER BY created_at DESC LIMIT 100`).all(),
+  ]);
+  return ok(c, { subscriptions: subs.results ?? [], webhooks: hooks.results ?? [] });
+});
+
+/** GET /admin/ai-jobs — recent AI generations + token cost. */
+adminRoutes.get('/ai-jobs', async (c) => {
+  const rows = await c.env.DB.prepare(
+    `SELECT id, store_id, kind, model, provider, status, cost_tokens, created_at FROM ai_jobs ORDER BY created_at DESC LIMIT 200`,
+  ).all();
+  const cost = await c.env.DB.prepare(`SELECT COALESCE(SUM(cost_tokens),0) tokens, COUNT(*) n FROM ai_jobs`).first<{ tokens: number; n: number }>();
+  return ok(c, { jobs: rows.results ?? [], totalTokens: cost?.tokens ?? 0, totalJobs: cost?.n ?? 0 });
+});
+
+/** GET /admin/diagnostics — recent plugin diagnostic bundles. */
+adminRoutes.get('/diagnostics', async (c) => {
+  const rows = await c.env.DB.prepare(
+    `SELECT d.id, d.store_id, s.domain, d.created_at FROM plugin_diagnostics d JOIN stores s ON s.id=d.store_id ORDER BY d.created_at DESC LIMIT 100`,
+  ).all();
+  return ok(c, { diagnostics: rows.results ?? [] });
+});
+
+/** GET /admin/feature-flags — global feature catalog + plan entitlements. */
+adminRoutes.get('/feature-flags', async (c) => {
+  return ok(c, {
+    features: Object.values(FEATURES).map((f) => ({ id: f.id, name: f.name, category: f.category, premium: f.premium })),
+    plans: Object.values(PLANS).map((p) => ({ id: p.id, name: p.name, entitlements: p.entitlements.length })),
+  });
+});
+
+/** GET /admin/plugin-releases — plugin version/update channel. */
+adminRoutes.get('/plugin-releases', async (c) => {
+  const versions = await c.env.DB.prepare(
+    `SELECT plugin_version, COUNT(*) n FROM stores WHERE plugin_version IS NOT NULL GROUP BY plugin_version`,
+  ).all();
+  return ok(c, {
+    latestVersion: '0.1.0',
+    minimumVersion: '0.1.0',
+    changelogUrl: 'https://airevenuerecovery.com/changelog',
+    installedVersions: versions.results ?? [],
+  });
 });

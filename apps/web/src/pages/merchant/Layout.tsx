@@ -1,11 +1,15 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../lib/useAuth';
+import { useTheme } from '../../lib/useTheme';
+import { useEffect } from 'react';
 
 const SECTIONS: { title: string; items: { to: string; label: string; ic: string; end?: boolean }[] }[] = [
   {
     title: 'Overview',
     items: [
       { to: '/app', label: 'Home', ic: '🏠', end: true },
+      { to: '/app/autopilot', label: 'AI Autopilot', ic: '🚀' },
       { to: '/app/store-doctor', label: 'Store Doctor', ic: '🩺' },
       { to: '/app/friction', label: 'Checkout Friction', ic: '🧭' },
     ],
@@ -30,6 +34,7 @@ const SECTIONS: { title: string; items: { to: string; label: string; ic: string;
     title: 'Messaging',
     items: [
       { to: '/app/email-designer', label: 'Email Designer', ic: '✉️' },
+      { to: '/app/popups', label: 'Popups & On-site', ic: '💬' },
       { to: '/app/deliverability', label: 'Deliverability', ic: '📬' },
     ],
   },
@@ -38,6 +43,7 @@ const SECTIONS: { title: string; items: { to: string; label: string; ic: string;
     items: [
       { to: '/app/reports', label: 'Reports', ic: '📊' },
       { to: '/app/agency', label: 'Agency', ic: '🏢' },
+      { to: '/app/settings', label: 'Settings', ic: '⚙️' },
       { to: '/app/license', label: 'License', ic: '🔑' },
       { to: '/app/connect', label: 'Connect a store', ic: '🔌' },
     ],
@@ -47,11 +53,23 @@ const SECTIONS: { title: string; items: { to: string; label: string; ic: string;
 export function MerchantLayout() {
   const { user, logout } = useAuth();
   const nav = useNavigate();
+  const loc = useLocation();
+  const { theme, toggle } = useTheme();
+  const [open, setOpen] = useState(false);
   const isStaff = user && ['super_admin', 'support'].includes(user.role);
+
+  // Close the mobile drawer on navigation.
+  useEffect(() => { setOpen(false); }, [loc.pathname]);
 
   return (
     <div className="shell">
-      <aside className="sidebar">
+      <div className="topbar">
+        <button className="hamburger" onClick={() => setOpen(true)} aria-label="Menu">☰</button>
+        <span className="topbar__brand">⚡ AI Revenue</span>
+        <span style={{ width: 36 }} />
+      </div>
+      {open && <div className="scrim" onClick={() => setOpen(false)} />}
+      <aside className={`sidebar${open ? ' open' : ''}`}>
         <div className="sidebar__brand">⚡ AI Revenue</div>
         {SECTIONS.map((sec) => (
           <div key={sec.title}>
@@ -69,6 +87,9 @@ export function MerchantLayout() {
             <NavLink to="/admin"><span className="ic">🛡️</span> Admin console</NavLink>
           </>
         )}
+        <div className="sidebar__tools">
+          <button className="theme-toggle" onClick={toggle}>{theme === 'dark' ? '☀️ Light mode' : '🌙 Dark mode'}</button>
+        </div>
         <div className="sidebar__section">&nbsp;</div>
         <a href="#logout" onClick={(e) => { e.preventDefault(); logout(); nav('/login'); }}>
           <span className="ic">↩︎</span> Log out

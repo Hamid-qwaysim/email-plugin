@@ -19,11 +19,18 @@ import { MerchantFriction } from './pages/merchant/Friction';
 import { MerchantAbTesting } from './pages/merchant/AbTesting';
 import { MerchantReports } from './pages/merchant/Reports';
 import { MerchantAgency } from './pages/merchant/Agency';
+import { MerchantPopups } from './pages/merchant/Popups';
+import { MerchantAutopilot } from './pages/merchant/Autopilot';
+import { MerchantSettings } from './pages/merchant/Settings';
 import { AdminLayout } from './pages/admin/Layout';
 import { AdminOverview } from './pages/admin/Overview';
 import { AdminLicenses } from './pages/admin/Licenses';
 import { AdminStores } from './pages/admin/Stores';
 import { AdminAudit } from './pages/admin/Audit';
+import { AdminMerchants } from './pages/admin/Merchants';
+import { AdminBilling } from './pages/admin/Billing';
+import { AdminAiEngine } from './pages/admin/AiEngine';
+import { AdminPlatform } from './pages/admin/Platform';
 import type { ReactNode } from 'react';
 
 function Protected({ children, staff }: { children: ReactNode; staff?: boolean }) {
@@ -51,8 +58,11 @@ export function App() {
       >
         <Route index element={<MerchantHome />} />
         <Route path="store-doctor" element={<MerchantStoreDoctor />} />
+        <Route path="autopilot" element={<MerchantAutopilot />} />
         <Route path="automations" element={<MerchantAutomations />} />
         <Route path="campaigns" element={<MerchantCampaigns />} />
+        <Route path="popups" element={<MerchantPopups />} />
+        <Route path="settings" element={<MerchantSettings />} />
         <Route path="coupons" element={<MerchantCoupons />} />
         <Route path="segments" element={<MerchantSegments />} />
         <Route path="customers" element={<MerchantCustomers />} />
@@ -76,7 +86,11 @@ export function App() {
       >
         <Route index element={<AdminOverview />} />
         <Route path="licenses" element={<AdminLicenses />} />
+        <Route path="merchants" element={<AdminMerchants />} />
         <Route path="stores" element={<AdminStores />} />
+        <Route path="billing" element={<AdminBilling />} />
+        <Route path="ai-engine" element={<AdminAiEngine />} />
+        <Route path="platform" element={<AdminPlatform />} />
         <Route path="audit" element={<AdminAudit />} />
       </Route>
 
