@@ -3,7 +3,15 @@ import { useAuth } from '../../lib/useAuth';
 
 const NAV = [
   { to: '/app', label: 'Home', end: true },
+  { to: '/app/store-doctor', label: 'Store Doctor' },
+  { to: '/app/automations', label: 'Automations' },
+  { to: '/app/campaigns', label: 'Campaigns' },
   { to: '/app/coupons', label: 'Coupons' },
+  { to: '/app/segments', label: 'Segments' },
+  { to: '/app/customers', label: 'Customers' },
+  { to: '/app/email-designer', label: 'Email Designer' },
+  { to: '/app/deliverability', label: 'Deliverability' },
+  { to: '/app/reports', label: 'Reports' },
   { to: '/app/license', label: 'License' },
   { to: '/app/connect', label: 'Connect a store' },
 ];

@@ -8,6 +8,14 @@ import { MerchantHome } from './pages/merchant/Home';
 import { MerchantCoupons } from './pages/merchant/Coupons';
 import { MerchantLicense } from './pages/merchant/License';
 import { MerchantConnect } from './pages/merchant/Connect';
+import { MerchantStoreDoctor } from './pages/merchant/StoreDoctor';
+import { MerchantAutomations } from './pages/merchant/Automations';
+import { MerchantCampaigns } from './pages/merchant/Campaigns';
+import { MerchantSegments } from './pages/merchant/Segments';
+import { MerchantCustomers } from './pages/merchant/Customers';
+import { MerchantEmailDesigner } from './pages/merchant/EmailDesigner';
+import { MerchantDeliverability } from './pages/merchant/Deliverability';
+import { MerchantReports } from './pages/merchant/Reports';
 import { AdminLayout } from './pages/admin/Layout';
 import { AdminOverview } from './pages/admin/Overview';
 import { AdminLicenses } from './pages/admin/Licenses';
@@ -37,7 +45,15 @@ export function App() {
         }
       >
         <Route index element={<MerchantHome />} />
+        <Route path="store-doctor" element={<MerchantStoreDoctor />} />
+        <Route path="automations" element={<MerchantAutomations />} />
+        <Route path="campaigns" element={<MerchantCampaigns />} />
         <Route path="coupons" element={<MerchantCoupons />} />
+        <Route path="segments" element={<MerchantSegments />} />
+        <Route path="customers" element={<MerchantCustomers />} />
+        <Route path="email-designer" element={<MerchantEmailDesigner />} />
+        <Route path="deliverability" element={<MerchantDeliverability />} />
+        <Route path="reports" element={<MerchantReports />} />
         <Route path="license" element={<MerchantLicense />} />
         <Route path="connect" element={<MerchantConnect />} />
       </Route>
