@@ -35,15 +35,32 @@ Legend: **L** = backend logic, **API** = endpoint, **UI** = dashboard page,
 | 24 | Plug-and-play Templates | `shared/store-types.ts` presets + `/apply-template`; applied at store creation. |
 | 25 | Smart Deliverability | `features/deliverability.ts` score + checklist (T) + `/deliverability` API; UI: Deliverability page. |
 
+## Dashboard surface (complete)
+
+**Merchant:** Home (ROI hero + onboarding), AI Autopilot, Store Doctor,
+Checkout Friction (funnel), Automations (visual flow builder), Campaigns (AI),
+Coupons, A/B Testing, Segments (visual rule builder), Customers (intent donut),
+Email Designer (block editor + live preview), Popups & On-site builder,
+Deliverability (gauge), Reports, Agency, Settings (brand/auth/data-privacy),
+License, Connect.
+
+**Super-admin:** Overview, Merchants, Licenses (issue/kill/entitlements),
+Stores, Billing (subs + webhooks), AI Engine (jobs + token cost), Platform
+(feature flags + plugin releases + diagnostics), Audit log.
+
+Plus: dark mode (persisted) and a mobile-responsive shell (drawer + topbar).
+
 ## Honest depth note
 
-Every feature has real, working logic — not empty stubs — plus persistence and
-wiring. Where a feature's "complete commercial" surface is large (e.g. a full
-drag-and-drop automation canvas, exhaustive email-flow libraries, or live web
-push delivery), the engine/decision logic and data flow are implemented and
-tested, while the richest UI affordances are intentionally lean and built to be
-extended. The critical commercial path (license/kill-switch, signed comms,
-recovery, coupons) is the most complete.
+Every feature has real, working logic — not empty stubs — plus persistence,
+wiring, and an interactive UI. The previously-lean editors are now interactive:
+the **automation flow builder** compiles to a validated engine graph, the
+**email block editor** renders a live preview, and the **segment rule builder**
+tests against sample profiles. Remaining commercial-grade extensions are
+incremental (e.g. pointer drag-and-drop reordering instead of move buttons,
+exhaustive prebuilt email-flow libraries, and live web-push *delivery* beyond
+subscription capture). The critical commercial path (license/kill-switch,
+signed comms, recovery, coupons) remains the most battle-tested.
 
 ## Tests
 

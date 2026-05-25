@@ -1,5 +1,11 @@
 # Cloudflare Deployment Guide
 
+> **Deployment readiness:** the Worker bundles cleanly (`wrangler deploy
+> --dry-run` passes), the web app builds, 42 API tests pass, and the plugin
+> zips. The only remaining inputs are your Cloudflare credentials + creating the
+> real D1/KV/R2/Queue resources (steps below).
+
+
 ## What gets deployed
 
 - **Worker** `arre-api` — the backend API + queue consumer (`apps/api`).
