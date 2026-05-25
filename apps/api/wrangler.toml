@@ -45,6 +45,10 @@ max_batch_timeout = 10
 max_retries = 5
 dead_letter_queue = "arre-jobs-dlq"
 
+# --- Cron Triggers: recovery scan + maintenance ---
+[triggers]
+crons = ["*/15 * * * *"]
+
 # Secrets to set via `wrangler secret put <NAME>` (never commit these):
 #   JWT_SECRET                 - signs merchant/admin session tokens
 #   LICENSE_SIGNING_PEPPER     - server-side pepper mixed into per-store secrets

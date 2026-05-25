@@ -12,6 +12,7 @@ import { errors, ok } from '../lib/response.js';
 import { getCachedDecision, loadLicenseRecord, validateLicense } from '../lib/license.js';
 import { prefixedId, now } from '../lib/ids.js';
 import { evaluateLicense } from '@arre/shared';
+import { applyCartEvents } from '../lib/carts.js';
 
 /**
  * Plugin-facing API. Every route here is HMAC-signed (signedRequest). The
@@ -193,6 +194,13 @@ pluginRoutes.post('/events', async (c) => {
     );
   }
   if (stmts.length) await c.env.DB.batch(stmts);
+
+  // Maintain cart lifecycle from cart-affecting events.
+  await applyCartEvents(
+    c.env,
+    storeId,
+    batch.events.map((e) => ({ type: e.type, visitorId: e.visitorId, cartToken: e.cartToken, props: e.props })),
+  );
 
   // Enqueue async visitor scoring for the affected visitors.
   const visitorIds = [...new Set(batch.events.map((e) => e.visitorId).filter(Boolean))];

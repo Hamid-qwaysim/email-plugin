@@ -19,6 +19,7 @@ final class ARRE_WooCommerce {
 
 	public function register(): void {
 		add_action( 'woocommerce_add_to_cart', array( $this, 'on_add_to_cart' ), 20, 1 );
+		add_action( 'woocommerce_cart_updated', array( $this, 'on_cart_updated' ), 20 );
 		add_action( 'woocommerce_checkout_order_processed', array( $this, 'on_order_created' ), 20, 1 );
 		add_action( 'woocommerce_order_status_completed', array( $this, 'on_order_paid' ), 20, 1 );
 		add_action( 'woocommerce_payment_complete', array( $this, 'on_order_paid' ), 20, 1 );
@@ -33,7 +34,27 @@ final class ARRE_WooCommerce {
 			array(
 				'cartItemKey' => sanitize_text_field( $cart_item_key ),
 				'cartTotal'   => $this->cart_total_cents(),
-			)
+			),
+			$this->cart_token()
+		);
+	}
+
+	/**
+	 * Fires whenever the cart changes. Sends a snapshot keyed by a stable
+	 * per-session cart token so the SaaS can track abandonment.
+	 */
+	public function on_cart_updated(): void {
+		if ( ! ARRE_License::feature_enabled( 'abandoned_cart_recovery' ) ) {
+			return;
+		}
+		$token = $this->cart_token();
+		if ( '' === $token ) {
+			return;
+		}
+		$this->forward(
+			'cart_updated',
+			array( 'cartTotal' => $this->cart_total_cents() ),
+			$token
 		);
 	}
 
@@ -84,26 +105,41 @@ final class ARRE_WooCommerce {
 	 * Forward a single server-side event. Best-effort; failures are swallowed so
 	 * they never affect the storefront. Heavy retry logic lives server-side.
 	 */
-	private function forward( string $type, array $props ): void {
+	private function forward( string $type, array $props, string $cart_token = '' ): void {
 		$client = ARRE_Api_Client::from_settings();
 		if ( null === $client ) {
 			return;
+		}
+		$event = array(
+			'type'      => $type,
+			'ts'        => time() * 1000,
+			'visitorId' => $this->server_visitor_id(),
+			'sessionId' => 'server',
+			'props'     => $props,
+		);
+		if ( '' !== $cart_token ) {
+			$event['cartToken'] = $cart_token;
 		}
 		$client->post(
 			'/plugin/events',
 			array(
 				'storeId' => (string) ARRE_Settings::get( 'store_id' ),
-				'events'  => array(
-					array(
-						'type'      => $type,
-						'ts'        => time() * 1000,
-						'visitorId' => $this->server_visitor_id(),
-						'sessionId' => 'server',
-						'props'     => $props,
-					),
-				),
+				'events'  => array( $event ),
 			)
 		);
+	}
+
+	/**
+	 * Stable per-session cart token (the WooCommerce session customer id).
+	 */
+	private function cart_token(): string {
+		if ( function_exists( 'WC' ) && WC()->session ) {
+			$id = WC()->session->get_customer_id();
+			if ( $id ) {
+				return 'wc-' . sanitize_text_field( (string) $id );
+			}
+		}
+		return '';
 	}
 
 	/**

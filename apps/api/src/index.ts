@@ -12,6 +12,7 @@ import { pluginRoutes } from './routes/plugin.js';
 import { aiRoutes } from './routes/ai.js';
 import { webhookRoutes } from './routes/webhooks.js';
 import { handleQueue } from './queue.js';
+import { runRecoveryScan } from './recovery-scan.js';
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 
@@ -64,5 +65,8 @@ export default {
   fetch: app.fetch,
   async queue(batch: MessageBatch<JobMessage>, env: Env): Promise<void> {
     await handleQueue(batch, env);
+  },
+  async scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
+    ctx.waitUntil(runRecoveryScan(env));
   },
 };
