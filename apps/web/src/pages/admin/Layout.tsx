@@ -10,6 +10,8 @@ export function AdminLayout() {
         <div className="sidebar__brand">🛡️ Admin Console</div>
         <NavLink to="/admin" end className={({ isActive }) => (isActive ? 'active' : '')}>Overview</NavLink>
         <NavLink to="/admin/licenses" className={({ isActive }) => (isActive ? 'active' : '')}>Licenses</NavLink>
+        <NavLink to="/admin/stores" className={({ isActive }) => (isActive ? 'active' : '')}>Stores</NavLink>
+        <NavLink to="/admin/audit" className={({ isActive }) => (isActive ? 'active' : '')}>Audit log</NavLink>
         <NavLink to="/app" style={{ marginTop: 16 }}>← Merchant view</NavLink>
         <a href="#logout" style={{ marginTop: 24 }} onClick={(e) => { e.preventDefault(); logout(); nav('/login'); }}>Log out</a>
       </aside>

@@ -7,13 +7,14 @@ generation, email automation, recovery flows and dashboards run. The moment the
 license expires, is canceled, or is killed from the admin console, **every
 premium feature stops immediately**.
 
-> **Status: foundation.** This repository is a real, building, tested
-> foundation — not a finished commercial product. The critical commercial path
-> (license lifecycle + kill switch, signed plugin↔SaaS communication, secure
-> WordPress plugin, schema, dashboards) is implemented end-to-end. The 25
-> features each have a defined home (registry, entitlements, schema, routes,
-> plugin toggles); their deeper per-feature logic is built out incrementally.
-> SMS is intentionally excluded.
+> **Status.** A real, building, tested implementation. All **25 features** are
+> implemented with working logic (not stubs): pure decision/engine modules with
+> unit tests, backend API endpoints, dashboard pages, and WordPress plugin
+> wiring. See **`docs/FEATURES.md`** for the per-feature map and an honest note
+> on where the richest UI affordances are intentionally lean and built to be
+> extended. The critical commercial path (license lifecycle + kill switch,
+> signed plugin↔SaaS comms, secure plugin, recovery, coupons) is the most
+> complete. SMS is intentionally excluded.
 
 ## Monorepo layout
 

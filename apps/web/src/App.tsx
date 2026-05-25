@@ -20,6 +20,8 @@ import { MerchantAgency } from './pages/merchant/Agency';
 import { AdminLayout } from './pages/admin/Layout';
 import { AdminOverview } from './pages/admin/Overview';
 import { AdminLicenses } from './pages/admin/Licenses';
+import { AdminStores } from './pages/admin/Stores';
+import { AdminAudit } from './pages/admin/Audit';
 import type { ReactNode } from 'react';
 
 function Protected({ children, staff }: { children: ReactNode; staff?: boolean }) {
@@ -70,6 +72,8 @@ export function App() {
       >
         <Route index element={<AdminOverview />} />
         <Route path="licenses" element={<AdminLicenses />} />
+        <Route path="stores" element={<AdminStores />} />
+        <Route path="audit" element={<AdminAudit />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
