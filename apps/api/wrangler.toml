@@ -8,7 +8,7 @@ workers_dev = true
 [vars]
 ENVIRONMENT = "production"
 # Comma-separated list of origins allowed to call the browser-facing API.
-ALLOWED_ORIGINS = "https://app.airevenuerecovery.com,https://airevenuerecovery.com"
+ALLOWED_ORIGINS = "https://arre-web.pages.dev,https://app.airevenuerecovery.com,https://airevenuerecovery.com"
 # Default cache TTL (seconds) the plugin may keep a positive license decision.
 DEFAULT_LICENSE_CACHE_TTL = "900"
 
@@ -16,17 +16,17 @@ DEFAULT_LICENSE_CACHE_TTL = "900"
 [[d1_databases]]
 binding = "DB"
 database_name = "arre_db"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_id = "28e3a183-c7d5-452d-b471-9ead30d0fced"
 migrations_dir = "migrations"
 
 # --- KV: fast license/status/config cache + nonce replay store ---
 [[kv_namespaces]]
 binding = "LICENSE_KV"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
+id = "e341911249a341d6845cd3a54134975e"
 
 [[kv_namespaces]]
 binding = "NONCE_KV"
-id = "REPLACE_WITH_NONCE_KV_NAMESPACE_ID"
+id = "23841badb2d14110879d5bdea7a395dd"
 
 # --- R2: reports, email assets, generated templates, logs ---
 [[r2_buckets]]
