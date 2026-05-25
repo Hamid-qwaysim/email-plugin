@@ -16,7 +16,7 @@ export interface OutboundEmail {
 }
 
 export interface SendResult {
-  provider: 'sendgrid' | 'smtp' | 'mock';
+  provider: 'sendgrid' | 'resend' | 'smtp' | 'mock';
   providerMessageId: string;
   accepted: boolean;
 }
@@ -62,8 +62,31 @@ class SendgridProvider implements EmailProvider {
   }
 }
 
+/** Resend (resend.com) — the simplest real ESP to adopt. */
+class ResendProvider implements EmailProvider {
+  readonly name = 'resend' as const;
+  constructor(private apiKey: string) {}
+  async send(email: OutboundEmail): Promise<SendResult> {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { authorization: `Bearer ${this.apiKey}`, 'content-type': 'application/json' },
+      body: JSON.stringify({
+        from: email.from,
+        to: [email.to],
+        subject: email.subject,
+        html: email.html,
+        ...(email.text ? { text: email.text } : {}),
+      }),
+    });
+    const data = (await res.json().catch(() => ({}))) as { id?: string };
+    return { provider: 'resend', providerMessageId: data.id ?? `re-${Date.now()}`, accepted: res.ok };
+  }
+}
+
 export function getEmailProvider(env: Env): EmailProvider {
-  if (env.EMAIL_API_KEY) return new SendgridProvider(env.EMAIL_API_KEY);
+  const provider = env.EMAIL_PROVIDER ?? (env.EMAIL_API_KEY ? 'resend' : 'mock');
+  if (provider === 'resend' && env.EMAIL_API_KEY) return new ResendProvider(env.EMAIL_API_KEY);
+  if (provider === 'sendgrid' && env.EMAIL_API_KEY) return new SendgridProvider(env.EMAIL_API_KEY);
   return new MockEmailProvider();
 }
 

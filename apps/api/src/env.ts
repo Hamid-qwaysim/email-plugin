@@ -16,9 +16,13 @@ export interface Env {
   JWT_SECRET: string;
   LICENSE_SIGNING_PEPPER: string;
   WEBHOOK_SIGNING_SECRET?: string;
+  /** 'anthropic' | 'openai' | 'mock'. Defaults: anthropic if key + this set, else openai if key, else mock. */
+  AI_PROVIDER?: string;
   AI_API_KEY?: string;
   AI_BASE_URL?: string;
   AI_MODEL?: string;
+  /** 'resend' | 'sendgrid' | 'cloudflare' | 'mock'. */
+  EMAIL_PROVIDER?: string;
   EMAIL_API_KEY?: string;
   EMAIL_FROM?: string;
 }

@@ -11,10 +11,12 @@ export interface AiMessage {
   content: string;
 }
 
+export type AiProviderName = 'openai_compatible' | 'anthropic' | 'mock';
+
 export interface AiResult {
   text: string;
   model: string;
-  provider: 'openai_compatible' | 'mock';
+  provider: AiProviderName;
   tokens?: number;
 }
 
@@ -27,7 +29,7 @@ const GUARDRAILS = [
 ].join(' ');
 
 export interface AiProvider {
-  readonly name: 'openai_compatible' | 'mock';
+  readonly name: AiProviderName;
   complete(messages: AiMessage[], opts?: { json?: boolean }): Promise<AiResult>;
 }
 
@@ -93,8 +95,54 @@ class OpenAiCompatibleProvider implements AiProvider {
   }
 }
 
+/** Anthropic (Claude) Messages API provider. */
+class AnthropicProvider implements AiProvider {
+  readonly name = 'anthropic' as const;
+  constructor(
+    private apiKey: string,
+    private baseUrl: string,
+    private model: string,
+  ) {}
+
+  async complete(messages: AiMessage[], opts?: { json?: boolean }): Promise<AiResult> {
+    // Anthropic takes a top-level `system` string; only user/assistant turns go in messages.
+    const system = messages.filter((m) => m.role === 'system').map((m) => m.content).join('\n');
+    const turns = messages
+      .filter((m) => m.role !== 'system')
+      .map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content }));
+    const sys = opts?.json ? `${system}\nRespond with ONLY valid JSON — no prose, no code fences.` : system;
+
+    const res = await fetch(`${this.baseUrl}/v1/messages`, {
+      method: 'POST',
+      headers: {
+        'x-api-key': this.apiKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({ model: this.model, max_tokens: 1024, system: sys, messages: turns }),
+    });
+    if (!res.ok) throw new Error(`Anthropic provider error ${res.status}`);
+    const data = (await res.json()) as {
+      content?: { type: string; text?: string }[];
+      usage?: { input_tokens?: number; output_tokens?: number };
+    };
+    const text = (data.content ?? []).filter((b) => b.type === 'text').map((b) => b.text ?? '').join('');
+    const tokens = (data.usage?.input_tokens ?? 0) + (data.usage?.output_tokens ?? 0);
+    return { text, model: this.model, provider: 'anthropic', tokens };
+  }
+}
+
 export function getAiProvider(env: Env): AiProvider {
-  if (env.AI_API_KEY) {
+  const provider = env.AI_PROVIDER ?? (env.AI_API_KEY ? 'openai' : 'mock');
+
+  if (provider === 'anthropic' && env.AI_API_KEY) {
+    return new AnthropicProvider(
+      env.AI_API_KEY,
+      env.AI_BASE_URL ?? 'https://api.anthropic.com',
+      env.AI_MODEL ?? 'claude-haiku-4-5-20251001',
+    );
+  }
+  if ((provider === 'openai' || provider === 'openai_compatible') && env.AI_API_KEY) {
     return new OpenAiCompatibleProvider(
       env.AI_API_KEY,
       env.AI_BASE_URL ?? 'https://api.openai.com/v1',
