@@ -26,7 +26,8 @@ export function Landing() {
       </header>
 
       <section className="hero container">
-        <h1>Recover lost sales with an AI marketing team inside your store</h1>
+        <span className="pill">⚡ AI revenue recovery for WooCommerce</span>
+        <h1>Recover lost sales with an <span className="grad">AI marketing team</span> inside your store</h1>
         <p>
           AI Revenue Recovery Engine recovers abandoned carts, generates smart coupons, and automates
           email marketing for WooCommerce — install once, and it works on autopilot.
@@ -63,8 +64,9 @@ export function Landing() {
         <h2>Everything your store needs to grow</h2>
         <p className="lead">25 AI-powered features across tracking, recovery, coupons, and automation.</p>
         <div className="grid grid--3">
-          {headlineFeatures.map((f) => (
+          {headlineFeatures.map((f, i) => (
             <div key={f.id} className="card feature">
+              <div className="feature__ic">{['🛒','🎟️','✉️','🎯','🩺','📈','🧪','📬','⚡'][i] ?? '✨'}</div>
               <h4>{f.name}</h4>
               <p>{f.description}</p>
             </div>
@@ -79,8 +81,10 @@ export function Landing() {
         <div className="grid grid--4">
           {PLAN_IDS.filter((p) => p !== 'free_test').map((id) => {
             const plan = PLANS[id];
+            const featured = id === 'growth';
             return (
-              <div key={id} className="card price-card">
+              <div key={id} className={`card price-card${featured ? ' featured' : ''}`}>
+                {featured && <span className="ribbon">Most popular</span>}
                 <h4>{plan.name}</h4>
                 <div className="amount">
                   {formatCents(plan.priceCents)}<span>/mo</span>

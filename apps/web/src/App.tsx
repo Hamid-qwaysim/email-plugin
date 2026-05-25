@@ -15,6 +15,8 @@ import { MerchantSegments } from './pages/merchant/Segments';
 import { MerchantCustomers } from './pages/merchant/Customers';
 import { MerchantEmailDesigner } from './pages/merchant/EmailDesigner';
 import { MerchantDeliverability } from './pages/merchant/Deliverability';
+import { MerchantFriction } from './pages/merchant/Friction';
+import { MerchantAbTesting } from './pages/merchant/AbTesting';
 import { MerchantReports } from './pages/merchant/Reports';
 import { MerchantAgency } from './pages/merchant/Agency';
 import { AdminLayout } from './pages/admin/Layout';
@@ -55,6 +57,8 @@ export function App() {
         <Route path="segments" element={<MerchantSegments />} />
         <Route path="customers" element={<MerchantCustomers />} />
         <Route path="email-designer" element={<MerchantEmailDesigner />} />
+        <Route path="friction" element={<MerchantFriction />} />
+        <Route path="ab-testing" element={<MerchantAbTesting />} />
         <Route path="deliverability" element={<MerchantDeliverability />} />
         <Route path="reports" element={<MerchantReports />} />
         <Route path="agency" element={<MerchantAgency />} />
