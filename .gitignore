@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.output/
+.wrangler/
+*.tsbuildinfo
+
+# Cloudflare / local dev
+.dev.vars
+.dev.vars.*
+wrangler.local.toml
+
+# Secrets & credentials — NEVER commit these
+*.secret
+*.secrets
+secrets/
+cloudflare.credentials*
+cf-credentials*
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Plugin build artifacts
+plugin/**/vendor/
+*.zip
+
+# Test / coverage
+coverage/
+.nyc_output/

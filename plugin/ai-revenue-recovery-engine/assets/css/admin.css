@@ -1,0 +1,34 @@
+.arre-wrap { max-width: 900px; }
+.arre-card {
+  background: #fff;
+  border: 1px solid #e2e4e7;
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin: 16px 0;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+}
+.arre-card h2 { margin-top: 0; }
+.arre-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.arre-badge--ok { background: #e6f6ec; color: #137333; }
+.arre-badge--warn { background: #fef7e0; color: #8a6d00; }
+.arre-badge--off { background: #f1f1f1; color: #555; }
+.arre-status-list { margin: 8px 0 0; }
+.arre-status-list li { margin: 2px 0; }
+.arre-pill-list { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
+.arre-pill {
+  background: #eef2ff;
+  color: #3730a3;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-family: monospace;
+}
+.arre-actions form { margin-right: 8px; }
+.arre-danger { border-color: #f0c0c0; }
+.arre-danger h2 { color: #b32d2e; }
