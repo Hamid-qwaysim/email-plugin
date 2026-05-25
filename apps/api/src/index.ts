@@ -11,6 +11,7 @@ import { merchantRoutes } from './routes/merchant.js';
 import { featureRoutes } from './routes/features.js';
 import { pluginRoutes } from './routes/plugin.js';
 import { aiRoutes } from './routes/ai.js';
+import { agencyRoutes } from './routes/agency.js';
 import { webhookRoutes } from './routes/webhooks.js';
 import { handleQueue } from './queue.js';
 import { runRecoveryScan } from './recovery-scan.js';
@@ -30,6 +31,7 @@ app.use('*', secureHeaders());
 app.use('/v1/auth/*', corsForOrigins());
 app.use('/v1/merchant/*', corsForOrigins());
 app.use('/v1/admin/*', corsForOrigins());
+app.use('/v1/agency/*', corsForOrigins());
 app.use('/v1/ai/*', corsForOrigins());
 
 function corsForOrigins() {
@@ -54,6 +56,7 @@ app.route('/v1/admin', adminRoutes);
 app.route('/v1/merchant', merchantRoutes);
 app.route('/v1/merchant', featureRoutes);
 app.route('/v1/ai', aiRoutes);
+app.route('/v1/agency', agencyRoutes);
 app.route('/v1/plugin', pluginRoutes);
 app.route('/v1/webhooks', webhookRoutes);
 

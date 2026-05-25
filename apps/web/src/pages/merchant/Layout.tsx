@@ -12,6 +12,7 @@ const NAV = [
   { to: '/app/email-designer', label: 'Email Designer' },
   { to: '/app/deliverability', label: 'Deliverability' },
   { to: '/app/reports', label: 'Reports' },
+  { to: '/app/agency', label: 'Agency' },
   { to: '/app/license', label: 'License' },
   { to: '/app/connect', label: 'Connect a store' },
 ];

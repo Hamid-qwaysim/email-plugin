@@ -48,6 +48,7 @@ final class ARRE_Plugin {
 			( new ARRE_Tracker() )->register();
 			( new ARRE_WooCommerce() )->register();
 			( new ARRE_Coupons() )->register();
+			( new ARRE_Onsite() )->register();
 		}
 
 		// Show an admin banner whenever premium features are paused.

@@ -16,6 +16,7 @@ import { MerchantCustomers } from './pages/merchant/Customers';
 import { MerchantEmailDesigner } from './pages/merchant/EmailDesigner';
 import { MerchantDeliverability } from './pages/merchant/Deliverability';
 import { MerchantReports } from './pages/merchant/Reports';
+import { MerchantAgency } from './pages/merchant/Agency';
 import { AdminLayout } from './pages/admin/Layout';
 import { AdminOverview } from './pages/admin/Overview';
 import { AdminLicenses } from './pages/admin/Licenses';
@@ -54,6 +55,7 @@ export function App() {
         <Route path="email-designer" element={<MerchantEmailDesigner />} />
         <Route path="deliverability" element={<MerchantDeliverability />} />
         <Route path="reports" element={<MerchantReports />} />
+        <Route path="agency" element={<MerchantAgency />} />
         <Route path="license" element={<MerchantLicense />} />
         <Route path="connect" element={<MerchantConnect />} />
       </Route>
