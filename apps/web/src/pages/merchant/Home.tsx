@@ -12,8 +12,8 @@ interface Overview {
 }
 interface License { status: string; plan_id: string }
 
-// Illustrative monthly subscription cost for the ROI hero (real plan price would come from billing).
-const PLAN_COST_CENTS: Record<string, number> = { free_test: 0, starter: 2900, growth: 7900, pro: 19900, agency: 49900 };
+// Annual subscription cost for the ROI hero (real plan price would come from billing).
+const PLAN_COST_CENTS: Record<string, number> = { free_test: 0, starter: 9700, growth: 19700, pro: 24900, agency: 0 };
 
 export function MerchantHome() {
   const [stores, setStores] = useState<StoreRow[] | null>(null);
@@ -65,9 +65,9 @@ export function MerchantHome() {
 
       <div className="grid grid--2" style={{ gridTemplateColumns: '1.3fr 1fr' }}>
         <div className="hero-metric">
-          <div className="label">This month you invested {formatCents(planCost)} — we recovered</div>
+          <div className="label">{planCost > 0 ? `Your plan is ${formatCents(planCost)}/yr — so far we recovered` : 'Recovered so far'}</div>
           <div className="value">{formatCents(recovered)}</div>
-          <div className="sub">{recovered > 0 ? `That's ${roi}× ROI on your subscription.` : 'Recovery starts as soon as carts are abandoned.'}</div>
+          <div className="sub">{recovered > 0 && planCost > 0 ? `That's ${roi}× your annual subscription.` : 'Recovery starts as soon as carts are abandoned.'}</div>
         </div>
         <Section title="Setup progress">
           <div className="row between" style={{ marginBottom: 8 }}>

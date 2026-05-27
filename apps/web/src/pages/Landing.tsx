@@ -87,11 +87,15 @@ export function Landing() {
                 {featured && <span className="ribbon">Most popular</span>}
                 <h4>{plan.name}</h4>
                 <div className="amount">
-                  {formatCents(plan.priceCents)}<span>/mo</span>
+                  {plan.contactSales ? 'Custom' : <>{formatCents(plan.priceCents)}<span>/yr</span></>}
                 </div>
                 <p className="muted" style={{ minHeight: 48 }}>{plan.marketingBlurb}</p>
                 <p className="muted" style={{ fontSize: 13 }}>{plan.entitlements.length} features included</p>
-                <Link to="/register" className="btn btn--primary btn--block mt-2">Choose {plan.name}</Link>
+                {plan.contactSales ? (
+                  <a href="mailto:sales@airevenuerecovery.com" className="btn btn--ghost btn--block mt-2">Contact our team</a>
+                ) : (
+                  <Link to="/register" className="btn btn--primary btn--block mt-2">Choose {plan.name}</Link>
+                )}
               </div>
             );
           })}

@@ -20,8 +20,12 @@ export interface PlanLimits {
 export interface PlanDefinition {
   id: PlanId;
   name: string;
-  /** Monthly price in the smallest currency unit (cents). 0 for free_test. */
+  /** Price in the smallest currency unit (cents) for one billing interval. */
   priceCents: number;
+  /** Billing interval. All public plans bill annually. */
+  interval: 'month' | 'year';
+  /** When true, no fixed price — the UI shows a "Contact our team" CTA. */
+  contactSales: boolean;
   currency: string;
   /** Feature IDs this plan is entitled to. */
   entitlements: FeatureId[];
@@ -75,6 +79,8 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
     id: 'free_test',
     name: 'Free Test / Beta',
     priceCents: 0,
+    interval: 'year',
+    contactSales: false,
     currency: 'usd',
     entitlements: [...PRO_FEATURES],
     limits: {
@@ -90,7 +96,9 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
   starter: {
     id: 'starter',
     name: 'Starter',
-    priceCents: 2900,
+    priceCents: 9700,
+    interval: 'year',
+    contactSales: false,
     currency: 'usd',
     entitlements: STARTER_FEATURES,
     limits: {
@@ -106,7 +114,9 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
   growth: {
     id: 'growth',
     name: 'Growth',
-    priceCents: 7900,
+    priceCents: 19700,
+    interval: 'year',
+    contactSales: false,
     currency: 'usd',
     entitlements: GROWTH_FEATURES,
     limits: {
@@ -122,7 +132,9 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
   pro: {
     id: 'pro',
     name: 'Pro',
-    priceCents: 19900,
+    priceCents: 24900,
+    interval: 'year',
+    contactSales: false,
     currency: 'usd',
     entitlements: PRO_FEATURES,
     limits: {
@@ -138,7 +150,9 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
   agency: {
     id: 'agency',
     name: 'Agency',
-    priceCents: 49900,
+    priceCents: 0,
+    interval: 'year',
+    contactSales: true,
     currency: 'usd',
     entitlements: AGENCY_FEATURES,
     limits: {
@@ -149,9 +163,16 @@ export const PLANS: Record<PlanId, PlanDefinition> = {
       maxMonthlyAiGenerations: 30_000,
     },
     internalOnly: false,
-    marketingBlurb: 'Multi-client management and white-label reporting for agencies.',
+    marketingBlurb: 'Custom plan for agencies — multi-client management and white-label reporting. Contact our team.',
   },
 };
+
+/** Format a plan's price for display, e.g. "$97/yr" or "Contact our team". */
+export function formatPlanPrice(plan: PlanDefinition): string {
+  if (plan.contactSales) return 'Contact our team';
+  const amount = (plan.priceCents / 100).toLocaleString('en-US', { style: 'currency', currency: plan.currency.toUpperCase(), maximumFractionDigits: 0 });
+  return `${amount}/${plan.interval === 'year' ? 'yr' : 'mo'}`;
+}
 
 export function isPlanId(value: string): value is PlanId {
   return (PLAN_IDS as readonly string[]).includes(value);
