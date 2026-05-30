@@ -1,0 +1,57 @@
+name = "arre-api"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+# --- Vars (non-secret). Secrets are set with `wrangler secret put`. ---
+[vars]
+ENVIRONMENT = "production"
+# Comma-separated list of origins allowed to call the browser-facing API.
+ALLOWED_ORIGINS = "https://arre-web.pages.dev,https://app.airevenuerecovery.com,https://airevenuerecovery.com"
+# Default cache TTL (seconds) the plugin may keep a positive license decision.
+DEFAULT_LICENSE_CACHE_TTL = "900"
+
+# --- D1 relational database ---
+[[d1_databases]]
+binding = "DB"
+database_name = "arre_db"
+database_id = "28e3a183-c7d5-452d-b471-9ead30d0fced"
+migrations_dir = "migrations"
+
+# --- KV: fast license/status/config cache + nonce replay store ---
+[[kv_namespaces]]
+binding = "LICENSE_KV"
+id = "e341911249a341d6845cd3a54134975e"
+
+[[kv_namespaces]]
+binding = "NONCE_KV"
+id = "23841badb2d14110879d5bdea7a395dd"
+
+# --- R2: reports, email assets, generated templates, logs ---
+[[r2_buckets]]
+binding = "ASSETS_R2"
+bucket_name = "arre-assets"
+
+# --- Queues: async jobs ---
+[[queues.producers]]
+binding = "JOBS_QUEUE"
+queue = "arre-jobs"
+
+[[queues.consumers]]
+queue = "arre-jobs"
+max_batch_size = 25
+max_batch_timeout = 10
+max_retries = 5
+dead_letter_queue = "arre-jobs-dlq"
+
+# --- Cron Triggers: recovery scan + maintenance ---
+[triggers]
+crons = ["*/15 * * * *"]
+
+# Secrets to set via `wrangler secret put <NAME>` (never commit these):
+#   JWT_SECRET                 - signs merchant/admin session tokens
+#   LICENSE_SIGNING_PEPPER     - server-side pepper mixed into per-store secrets
+#   WEBHOOK_SIGNING_SECRET     - verifies inbound billing webhooks
+#   AI_API_KEY                 - OpenAI-compatible provider key (optional)
+#   EMAIL_API_KEY              - SendGrid-compatible provider key (optional)

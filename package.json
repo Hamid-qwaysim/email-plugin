@@ -1,0 +1,33 @@
+{
+  "name": "ai-revenue-recovery-engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI Revenue Recovery Engine — SaaS platform + WooCommerce plugin for AI-powered cart recovery, coupons, and marketing automation.",
+  "license": "UNLICENSED",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build:shared": "npm run build -w @arre/shared",
+    "build:api": "npm run build -w @arre/api",
+    "build:web": "npm run build -w @arre/web",
+    "build": "npm run build:shared && npm run build:api && npm run build:web",
+    "dev:api": "npm run dev -w @arre/api",
+    "dev:web": "npm run dev -w @arre/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "db:migrate:local": "npm run db:migrate:local -w @arre/api",
+    "db:migrate:remote": "npm run db:migrate:remote -w @arre/api",
+    "deploy:api": "npm run deploy -w @arre/api",
+    "deploy:web": "npm run deploy -w @arre/web",
+    "deploy": "bash scripts/deploy.sh",
+    "plugin:zip": "bash scripts/build-plugin-zip.sh"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}
